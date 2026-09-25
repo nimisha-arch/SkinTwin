@@ -13,7 +13,7 @@ A thoughtful, AI-powered skincare consultation engine that transforms overwhelmi
 [![Netlify Functions](https://img.shields.io/badge/Netlify_Functions-Serverless-00C7B7?style=flat-square&logo=netlify&logoColor=white)](https://www.netlify.com/products/functions/)
 [![Google Gemini API](https://img.shields.io/badge/Google_Gemini-3.8_/_Flash-4285F4?style=flat-square&logo=googlecloud&logoColor=white)](https://ai.google.dev/)
 
-[**Explore Live Application**](https://skintwin.netlify.app) &nbsp;•&nbsp; [**View Documentation**](./docs/PROJECT.md) &nbsp;•&nbsp; [**Architecture Overview**](#-architecture)
+[**Explore Live Application**](https://skintwin0.netlify.app/) &nbsp;•&nbsp; [**View Documentation**](./docs/PROJECT.md) &nbsp;•&nbsp; [**Architecture Overview**](#-architecture)
 
 ---
 
@@ -504,7 +504,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 **Experience SkinTwin Today**
 
-[**Launch Application →**](https://skintwin.netlify.app)
+[**Launch Application →**](https://skintwin0.netlify.app/)
 
 *Crafted with care for simple, confident skincare discovery.*
 
