@@ -7,6 +7,11 @@ export interface SkinProfile {
   budget: number;
 }
 
+export interface ProductLink {
+  title: string;
+  url: string;
+}
+
 export interface Recommendation {
   productName: string;
   brand: string;
@@ -14,7 +19,8 @@ export interface Recommendation {
   price: string | null;
   keyInfo: string;
   reasoning: string;
-  link: string | null;
+  link?: string | null;
+  links?: ProductLink[];
 }
 
 export interface RecommendationResponse {

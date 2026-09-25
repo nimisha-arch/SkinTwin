@@ -11,8 +11,20 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   recommendation,
   index: _index,
 }) => {
-  const { productName, brand, productType, price, keyInfo, reasoning, link } =
+  const { productName, brand, productType, price, keyInfo, reasoning, link, links } =
     recommendation;
+
+  const query = `${brand} ${productName}`.trim();
+  const encodedQuery = encodeURIComponent(query);
+
+  const displayLinks =
+    links && links.length > 0
+      ? links
+      : [
+          ...(link ? [{ title: 'Direct Store', url: link }] : []),
+          { title: 'Nykaa', url: `https://www.nykaa.com/search/result/?q=${encodedQuery}` },
+          { title: 'Amazon', url: `https://www.amazon.in/s?k=${encodedQuery}` },
+        ];
 
   return (
     <article className="bg-white rounded-card p-6 sm:p-7 border border-border-subtle flex flex-col justify-between transition-colors duration-200 hover:border-olive/30">
@@ -58,23 +70,25 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
         </div>
       </div>
 
-      {/* Action Link */}
-      <div className="pt-5 mt-6 border-t border-border-subtle/70">
-        {link ? (
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-1 text-xs uppercase tracking-[0.14em] font-medium text-olive hover:text-peach-dark transition-colors"
-          >
-            <span>View Product</span>
-            <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
-        ) : (
-          <span className="text-xs text-olive-muted/65 italic font-normal">
-            Available at standard Indian skincare retailers
-          </span>
-        )}
+      {/* Multiple Retailer / Purchase Options */}
+      <div className="pt-5 mt-6 border-t border-border-subtle/70 space-y-2">
+        <span className="text-[11px] uppercase tracking-[0.14em] font-medium text-olive/50 block">
+          Available at:
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {displayLinks.map((item, idx) => (
+            <a
+              key={`${item.title}-${idx}`}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-1 text-xs font-medium text-olive hover:text-olive-hover px-2.5 py-1.5 rounded-control bg-cream/70 hover:bg-cream border border-border-subtle hover:border-olive/30 transition-colors"
+            >
+              <span>{item.title}</span>
+              <ArrowUpRight className="w-3 h-3 text-olive-muted transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          ))}
+        </div>
       </div>
     </article>
   );

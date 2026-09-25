@@ -9,6 +9,11 @@ interface SkinProfile {
   budget: number;
 }
 
+interface ProductLink {
+  title: string;
+  url: string;
+}
+
 interface Recommendation {
   productName: string;
   brand: string;
@@ -17,9 +22,10 @@ interface Recommendation {
   keyInfo: string;
   reasoning: string;
   link: string | null;
+  links: ProductLink[];
 }
 
-const SYSTEM_INSTRUCTION = `You are a skincare product recommendation assistant for users in India. Given a user's skin profile, recommend up to 3 skincare products that best match their skin type, concerns, requested product category, and budget in INR. Prefer products realistically available in the Indian market. Do not make medical claims or diagnoses. For each product, explain briefly why it fits this specific user. Provide a purchase or search link only if you are reasonably confident it is accurate; otherwise omit the link field. Respond ONLY with valid JSON matching this exact schema, no extra text:
+const SYSTEM_INSTRUCTION = `You are a skincare product recommendation assistant for users in India. Given a user's skin profile, recommend up to 3 skincare products that best match their skin type, concerns, requested product category, and budget in INR. Prefer products realistically available in the Indian market. Do not make medical claims or diagnoses. For each product, explain briefly why it fits this specific user. Provide purchase or search links where confidently possible (e.g. Nykaa, Amazon India, official brand site). Respond ONLY with valid JSON matching this exact schema, no extra text:
 {
   "recommendations": [
     {
@@ -29,7 +35,13 @@ const SYSTEM_INSTRUCTION = `You are a skincare product recommendation assistant 
       "price": "string | null",
       "keyInfo": "string",
       "reasoning": "string",
-      "link": "string | null"
+      "link": "string | null",
+      "links": [
+        {
+          "title": "string",
+          "url": "string"
+        }
+      ]
     }
   ]
 }`;
@@ -95,13 +107,51 @@ function validateAndNormalizeRecommendations(parsed: any): Recommendation[] {
       price = `₹${item.price}`;
     }
 
-    let link: string | null = null;
+    const links: ProductLink[] = [];
+    const query = `${brand} ${productName}`.trim();
+    const encodedQuery = encodeURIComponent(query);
+
+    // 1. If Gemini returned direct valid URLs in links array
+    if (Array.isArray(item.links)) {
+      for (const l of item.links) {
+        if (l && typeof l.url === 'string' && (l.url.startsWith('http://') || l.url.startsWith('https://'))) {
+          const title = typeof l.title === 'string' && l.title.trim() ? l.title.trim() : 'Store';
+          if (!links.some((existing) => existing.url === l.url)) {
+            links.push({ title, url: l.url.trim() });
+          }
+        }
+      }
+    }
+
+    // 2. If Gemini provided a single link
     if (typeof item.link === 'string' && item.link.trim()) {
       const trimmedLink = item.link.trim();
       if (trimmedLink.startsWith('http://') || trimmedLink.startsWith('https://')) {
-        link = trimmedLink;
+        if (!links.some((existing) => existing.url === trimmedLink)) {
+          links.push({
+            title: 'Official Store',
+            url: trimmedLink,
+          });
+        }
       }
     }
+
+    // 3. Reliable Indian retailer destinations so user never gets broken 404s
+    if (!links.some((l) => l.title.toLowerCase().includes('nykaa'))) {
+      links.push({
+        title: 'Nykaa',
+        url: `https://www.nykaa.com/search/result/?q=${encodedQuery}`,
+      });
+    }
+
+    if (!links.some((l) => l.title.toLowerCase().includes('amazon'))) {
+      links.push({
+        title: 'Amazon',
+        url: `https://www.amazon.in/s?k=${encodedQuery}`,
+      });
+    }
+
+    const primaryLink = links[0]?.url || null;
 
     normalized.push({
       productName,
@@ -110,7 +160,8 @@ function validateAndNormalizeRecommendations(parsed: any): Recommendation[] {
       price,
       keyInfo,
       reasoning,
-      link,
+      link: primaryLink,
+      links,
     });
 
     if (normalized.length >= 3) break;
