@@ -22,7 +22,7 @@ export const BudgetInput: React.FC<BudgetInputProps> = ({
   return (
     <div className="space-y-3">
       <div className="relative max-w-xs">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-olive font-serif text-lg font-medium select-none pointer-events-none">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-olive/60 font-serif text-base select-none pointer-events-none">
           ₹
         </span>
         <input
@@ -32,26 +32,25 @@ export const BudgetInput: React.FC<BudgetInputProps> = ({
           value={value > 0 ? value : ''}
           onChange={handleChange}
           placeholder="e.g. 1500"
-          className={`w-full pl-9 pr-4 py-3 bg-white rounded-xl border text-olive text-base placeholder:text-olive/40 transition-colors duration-150 ${
+          className={`w-full pl-8 pr-3.5 py-2.5 bg-white rounded-control border text-olive text-sm placeholder:text-olive/35 transition-colors duration-150 ${
             error
-              ? 'border-red ring-1 ring-red focus:border-red'
-              : 'border-sage/70 focus:border-olive focus:ring-1 focus:ring-olive'
+              ? 'border-red ring-1 ring-red/50 focus:border-red'
+              : 'border-border-subtle focus:border-olive'
           }`}
         />
       </div>
 
-      {/* Quick budget presets for user convenience */}
       <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-xs text-olive-muted mr-1">Quick pick:</span>
+        <span className="text-xs text-olive-muted mr-1">Quick select:</span>
         {QUICK_BUDGETS.map((amt) => (
           <button
             key={amt}
             type="button"
             onClick={() => onChange(amt)}
-            className={`px-2.5 py-1 text-xs rounded-lg transition-colors border ${
+            className={`px-3 py-1.5 text-xs rounded-control transition-colors border ${
               value === amt
-                ? 'bg-sage border-sage text-olive font-medium'
-                : 'bg-white/60 border-sage/40 text-olive/80 hover:bg-white hover:border-sage'
+                ? 'bg-olive text-cream border-olive font-medium'
+                : 'bg-white/80 hover:bg-white text-olive/75 border-border-subtle hover:border-olive/30'
             }`}
           >
             ₹{amt.toLocaleString('en-IN')}
@@ -60,7 +59,7 @@ export const BudgetInput: React.FC<BudgetInputProps> = ({
       </div>
 
       {error && (
-        <p className="text-xs text-red mt-1 font-medium" role="alert">
+        <p className="text-xs text-red mt-1 font-normal" role="alert">
           {error}
         </p>
       )}

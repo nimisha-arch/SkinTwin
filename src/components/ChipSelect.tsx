@@ -5,7 +5,6 @@ interface ChipSelectProps {
   selected: string | string[];
   onChange: (value: string | string[]) => void;
   multiple?: boolean;
-  activeColor?: 'sage' | 'peach';
   onOptionToggle?: (option: string) => void;
 }
 
@@ -14,7 +13,6 @@ export const ChipSelect: React.FC<ChipSelectProps> = ({
   selected,
   onChange,
   multiple = false,
-  activeColor = 'sage',
   onOptionToggle,
 }) => {
   const isSelected = (opt: string) => {
@@ -50,10 +48,9 @@ export const ChipSelect: React.FC<ChipSelectProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap gap-2.5" role="group">
+    <div className="flex flex-wrap gap-2" role="group">
       {options.map((opt) => {
         const active = isSelected(opt);
-        const bgActive = activeColor === 'peach' ? 'bg-peach' : 'bg-sage';
 
         return (
           <button
@@ -63,10 +60,10 @@ export const ChipSelect: React.FC<ChipSelectProps> = ({
             aria-checked={active}
             onClick={() => handleSelect(opt)}
             onKeyDown={(e) => handleKeyDown(e, opt)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border cursor-pointer select-none text-olive ${
+            className={`px-3.5 py-2 rounded-control text-sm transition-colors duration-150 border cursor-pointer select-none text-left ${
               active
-                ? `${bgActive} border-transparent shadow-sm font-semibold`
-                : 'bg-white/80 hover:bg-white border-sage/60 text-olive/80 hover:text-olive hover:border-sage'
+                ? 'bg-olive text-cream border-olive font-medium'
+                : 'bg-white/80 hover:bg-white text-olive/80 hover:text-olive border-border-subtle hover:border-olive/30'
             }`}
           >
             {opt}

@@ -3,23 +3,33 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: #FAF7F0;
+  }
+
   body {
     background-color: #FAF7F0;
     color: #384238;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    line-height: 1.6;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.65;
+    letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, .font-serif {
     font-family: 'Fraunces', Georgia, serif;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
+    font-weight: 400;
   }
 
-  /* Custom subtle focus styles for accessibility */
-  button:focus-visible, input:focus-visible, select:focus-visible {
-    outline: 2px solid #384238;
-    outline-offset: 2px;
+  /* Accessible, quiet focus ring */
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  a:focus-visible {
+    outline: 1.5px solid #384238;
+    outline-offset: 3px;
   }
 }

@@ -44,40 +44,36 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-cream text-olive flex flex-col justify-between selection:bg-peach selection:text-olive">
-      {/* Brand Header */}
-      <header className="w-full border-b border-sage/20 bg-cream/80 backdrop-blur-sm sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="w-3 h-3 rounded-full bg-peach" />
-            <span className="font-serif text-xl tracking-tight font-medium text-olive">
+    <div className="min-h-screen bg-cream text-olive flex flex-col justify-between selection:bg-peach-light selection:text-olive">
+      {/* Refined Brand Header */}
+      <header className="w-full border-b border-border-subtle bg-cream/90 backdrop-blur-md sticky top-0 z-20">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-baseline gap-3">
+            <span className="font-serif text-lg tracking-[0.22em] font-medium text-olive uppercase">
               SkinTwin
             </span>
           </div>
-          <span className="text-xs uppercase tracking-widest text-olive-muted font-medium hidden sm:inline">
+          <span className="text-xs text-olive-muted font-normal tracking-wide hidden sm:inline">
             Your skin. Your twin. Your routine.
           </span>
         </div>
       </header>
 
-      {/* Main Container */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      {/* Main Content Area */}
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
         {status === 'idle' && (
-          <div className="space-y-8 animate-fadeIn">
-            {/* Hero Section */}
-            <div className="text-center max-w-2xl mx-auto pt-4 sm:pt-8 space-y-4">
-              <span className="text-xs uppercase tracking-widest text-olive-muted font-semibold bg-sage/20 px-3.5 py-1.5 rounded-full border border-sage/40 inline-block">
-                AI Skincare Intelligence
-              </span>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-normal text-olive tracking-tight leading-[1.15]">
-                Targeted recommendations. No bias.
+          <div className="space-y-12 sm:space-y-16">
+            {/* Editorial Hero */}
+            <div className="text-center max-w-xl mx-auto space-y-3.5">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-olive font-normal tracking-tight leading-[1.18]">
+                Personalized skincare, thoughtfully curated.
               </h1>
-              <p className="text-base sm:text-lg text-olive-muted font-normal max-w-xl mx-auto leading-relaxed">
-                Describe your skin type, primary concerns, and budget. Our AI skin engine finds 3 curated products that actually match you.
+              <p className="text-sm sm:text-base text-olive-muted font-normal leading-relaxed">
+                Describe your skin profile, active concerns, and budget. We provide three targeted product recommendations for your daily routine.
               </p>
             </div>
 
-            {/* Assessment Form */}
+            {/* Assessment Consultation Form */}
             <AssessmentForm
               initialValues={profile}
               onSubmit={handleFormSubmit}

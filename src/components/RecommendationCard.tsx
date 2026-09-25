@@ -1,6 +1,6 @@
 import React from 'react';
 import { Recommendation } from '../types/skintwin';
-import { ExternalLink } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 interface RecommendationCardProps {
   recommendation: Recommendation;
@@ -9,72 +9,70 @@ interface RecommendationCardProps {
 
 export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   recommendation,
-  index,
+  index: _index,
 }) => {
   const { productName, brand, productType, price, keyInfo, reasoning, link } =
     recommendation;
 
   return (
-    <article className="bg-white rounded-2xl p-6 sm:p-7 border border-sage/50 flex flex-col justify-between transition-all duration-200 hover:border-sage hover:shadow-[0_4px_20px_-8px_rgba(56,66,56,0.08)]">
+    <article className="bg-white rounded-card p-6 sm:p-7 border border-border-subtle flex flex-col justify-between transition-colors duration-200 hover:border-olive/30">
       <div className="space-y-4">
-        {/* Top Header: Step/Counter Badge & Price */}
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-xs uppercase tracking-widest font-semibold text-olive/60 bg-cream px-2.5 py-1 rounded-full border border-sage/40">
-            Pick 0{index + 1}
+        {/* Brand & Price Header */}
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="text-[11px] uppercase tracking-[0.18em] font-medium text-olive-muted">
+            {brand}
           </span>
           {price && (
-            <span className="text-sm font-semibold text-olive bg-sage/20 px-2.5 py-0.5 rounded-md">
+            <span className="text-sm font-medium text-olive tabular-nums">
               {price.startsWith('₹') ? price : `₹${price}`}
             </span>
           )}
         </div>
 
-        {/* Product Name & Brand */}
+        {/* Product Identity */}
         <div>
-          <h3 className="font-serif text-xl sm:text-2xl text-olive font-normal leading-snug">
+          <h3 className="font-serif text-xl sm:text-2xl text-olive font-normal leading-snug tracking-tight">
             {productName}
           </h3>
-          <div className="flex items-center gap-2 mt-1 text-xs text-olive-muted font-medium">
-            <span className="uppercase tracking-wider">{brand}</span>
-            <span>•</span>
-            <span>{productType}</span>
-          </div>
+          <p className="text-xs text-olive-muted mt-1 font-normal">
+            {productType}
+          </p>
         </div>
 
-        {/* Key Info / Hero ingredients */}
+        {/* Key Formulation Details */}
         {keyInfo && (
-          <div className="bg-cream/70 rounded-xl p-3 border border-sage/30 text-xs text-olive/80 leading-relaxed">
-            <span className="font-semibold text-olive">Key formulation: </span>
+          <div className="pt-2 text-xs text-olive/75 leading-relaxed">
+            <span className="font-medium text-olive">Active composition: </span>
             {keyInfo}
           </div>
         )}
 
-        {/* Personalized Why Recommended */}
-        <div className="pt-1">
-          <h4 className="text-xs uppercase tracking-wider font-semibold text-olive/70 mb-1.5">
-            Why It Fits Your Skin
+        {/* Editorial Reasoning */}
+        <div className="pt-3 border-t border-border-subtle/70 space-y-1.5">
+          <h4 className="text-[11px] uppercase tracking-[0.14em] font-medium text-olive/60">
+            Why We Recommend It
           </h4>
-          <p className="text-sm text-olive/90 leading-relaxed font-normal">
+          <p className="text-sm text-olive/85 leading-relaxed font-normal">
             {reasoning}
           </p>
         </div>
       </div>
 
-      {/* Action Link (if confidently provided by Gemini) */}
-      <div className="pt-6 mt-6 border-t border-sage/20">
+      {/* Action Link */}
+      <div className="pt-5 mt-6 border-t border-border-subtle/70">
         {link ? (
           <a
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-peach-dark hover:text-olive transition-colors group"
+            className="group inline-flex items-center gap-1 text-xs uppercase tracking-[0.14em] font-medium text-olive hover:text-peach-dark transition-colors"
           >
             <span>View Product</span>
-            <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         ) : (
-          <span className="text-xs text-olive-muted/70 italic">
-            Check local retailer or official store for availability
+          <span className="text-xs text-olive-muted/65 italic font-normal">
+            Available at standard Indian skincare retailers
           </span>
         )}
       </div>
