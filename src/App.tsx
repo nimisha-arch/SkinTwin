@@ -69,7 +69,7 @@ export default function App() {
                 Personalized skincare, thoughtfully curated.
               </h1>
               <p className="text-sm sm:text-base text-olive-muted font-normal leading-relaxed">
-                Describe your skin profile, active concerns, and budget. We provide three targeted product recommendations for your daily routine.
+                Describe your skin profile, active concerns, and budget. We curate six targeted product recommendations tailored to your daily routine.
               </p>
             </div>
 

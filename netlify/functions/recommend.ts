@@ -25,14 +25,19 @@ interface Recommendation {
   links: ProductLink[];
 }
 
-const SYSTEM_INSTRUCTION = `You are a skincare product recommendation assistant for users in India. Given a user's skin profile, recommend up to 3 skincare products that best match their skin type, concerns, requested product category, and budget in INR. Prefer products realistically available in the Indian market. Do not make medical claims or diagnoses. For each product, explain briefly why it fits this specific user. Provide purchase or search links where confidently possible (e.g. Nykaa, Amazon India, official brand site). Respond ONLY with valid JSON matching this exact schema, no extra text:
+const SYSTEM_INSTRUCTION = `You are an expert skincare recommendation assistant specializing in the Indian market.
+Given a user's skin profile, recommend exactly 6 skincare products comfortably and widely available in India from reputable brands (such as Minimalist, The Derma Co, Re'equil, Dot & Key, Dr. Sheth's, Plum, Aqualogica, Foxtale, Cetaphil, Deconstruct, Conscious Chemist, Neutrogena, Simple).
+Ensure all products strictly adhere to the requested product category, skin tolerance, primary concerns, and target budget in INR.
+Do not make medical claims or diagnoses. For each product, explain specifically why it fits this user's profile and budget.
+Provide realistic INR (₹) price estimates.
+Respond ONLY with valid JSON matching this exact schema, no extra text:
 {
   "recommendations": [
     {
       "productName": "string",
       "brand": "string",
       "productType": "string",
-      "price": "string | null",
+      "price": "string",
       "keyInfo": "string",
       "reasoning": "string",
       "link": "string | null",
@@ -95,7 +100,7 @@ function validateAndNormalizeRecommendations(parsed: any): Recommendation[] {
     const reasoning = typeof item.reasoning === 'string' ? item.reasoning.trim() : '';
     const keyInfo = typeof item.keyInfo === 'string' ? item.keyInfo.trim() : '';
 
-    // productName, brand, productType, and reasoning are required fields
+    // productName, brand, and reasoning are required fields
     if (!productName || !brand || !reasoning) {
       continue;
     }
@@ -109,47 +114,31 @@ function validateAndNormalizeRecommendations(parsed: any): Recommendation[] {
 
     const links: ProductLink[] = [];
     const query = `${brand} ${productName}`.trim();
-    const encodedQuery = encodeURIComponent(query);
 
-    // 1. If Gemini returned direct valid URLs in links array
-    if (Array.isArray(item.links)) {
-      for (const l of item.links) {
-        if (l && typeof l.url === 'string' && (l.url.startsWith('http://') || l.url.startsWith('https://'))) {
-          const title = typeof l.title === 'string' && l.title.trim() ? l.title.trim() : 'Store';
-          if (!links.some((existing) => existing.url === l.url)) {
-            links.push({ title, url: l.url.trim() });
-          }
-        }
-      }
-    }
-
-    // 2. If Gemini provided a single link
-    if (typeof item.link === 'string' && item.link.trim()) {
-      const trimmedLink = item.link.trim();
-      if (trimmedLink.startsWith('http://') || trimmedLink.startsWith('https://')) {
-        if (!links.some((existing) => existing.url === trimmedLink)) {
-          links.push({
-            title: 'Official Store',
-            url: trimmedLink,
-          });
-        }
-      }
-    }
-
-    // 3. Reliable Indian retailer destinations so user never gets broken 404s
-    if (!links.some((l) => l.title.toLowerCase().includes('nykaa'))) {
+    // 1. Direct official product store link (Google I'm Feeling Lucky direct redirect to product page)
+    if (typeof item.link === 'string' && item.link.trim().startsWith('http')) {
       links.push({
-        title: 'Nykaa',
-        url: `https://www.nykaa.com/search/result/?q=${encodedQuery}`,
+        title: 'Official Store',
+        url: item.link.trim(),
+      });
+    } else {
+      links.push({
+        title: 'Official Store',
+        url: `https://www.google.com/search?btnI=1&q=${encodeURIComponent(`${query} official buy online`)}`,
       });
     }
 
-    if (!links.some((l) => l.title.toLowerCase().includes('amazon'))) {
-      links.push({
-        title: 'Amazon',
-        url: `https://www.amazon.in/s?k=${encodedQuery}`,
-      });
-    }
+    // 2. Direct Nykaa product page link
+    links.push({
+      title: 'Nykaa',
+      url: `https://www.google.com/search?btnI=1&q=${encodeURIComponent(`site:nykaa.com "${brand}" "${productName}"`)}`,
+    });
+
+    // 3. Direct Amazon India product page link
+    links.push({
+      title: 'Amazon',
+      url: `https://www.google.com/search?btnI=1&q=${encodeURIComponent(`site:amazon.in "${brand}" "${productName}"`)}`,
+    });
 
     const primaryLink = links[0]?.url || null;
 
@@ -164,7 +153,7 @@ function validateAndNormalizeRecommendations(parsed: any): Recommendation[] {
       links,
     });
 
-    if (normalized.length >= 3) break;
+    if (normalized.length >= 6) break;
   }
 
   if (normalized.length === 0) {
@@ -240,7 +229,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
 - Product Requested: ${profile.productWanted}
 - Target Budget: Up to ₹${profile.budget} INR
 
-Please recommend up to 3 suitable products realistically available in India matching this profile within the budget.`;
+Please recommend exactly 6 top products comfortably available in the Indian market matching this profile within the budget.`;
 
   // Supported Gemini models with resilient fallbacks for spikes/availability
   const models = [
